@@ -1,11 +1,11 @@
 module Main where
 
-import Control.Monad.Eff.Console
-import Prelude
+import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff (Eff)
+import Prelude (Unit)
 import Ch2
 
 
+main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
-  log "Chapter 2 exercises"
-  logShow (diagonal 3.0 4.0)
-  logShow (diagonal 5.0 4.0)
+  ch2
