@@ -3,10 +3,9 @@ Code from working thru purescript by example
 
 ## Notes
 
+### Differences from Haskell
 
-### Differnces from Haskell
-
-### Composition
+#### Composition
 rather than using `.` for function composition as in Haskell, we instead use
 `>>>` and `<<<`. 
 
@@ -16,4 +15,5 @@ composition, often known as the pipe or pipeline operator.
 ### Types
 
 PureScript allows for quantified types for example `forall a. a -> ....` I think that the
-fullstop is jus delimiting the quantifier 
+fullstop is just delimiting the quantifier 
+
