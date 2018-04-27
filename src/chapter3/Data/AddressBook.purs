@@ -10,8 +10,6 @@ import Data.Newtype
 
 
 
-tt = (\x -> x.firstName) <<< unwrap 
-
 newtype Address = Address
   { street :: String
   , city   :: String
@@ -29,13 +27,12 @@ newtype Entry = Entry
 type AddressBook = List Entry
 
 showAddress :: Address -> String
-showAddress =
-  (\addr -> addr.street <> ", " <> addr.city <> ", " <> addr.state) <<< unwrap
+showAddress (Address { street, city, state }) = 
+  street <> ", " <> city <> ", " <> state
 
 showEntry :: Entry -> String
-showEntry =
-  (\entry -> entry.lastName <> ", " <> entry.firstName <> ": " <>
-  showAddress entry.address) <<< unwrap
+showEntry (Entry { lastName, firstName, address }) = 
+  lastName <> ", " <> firstName <> ": " <> showAddress address
 
 emptyBook :: AddressBook
 emptyBook = empty
@@ -44,11 +41,11 @@ insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons
 
 findEntry :: String -> String -> AddressBook -> Maybe Entry
-findEntry firstName lastName = head <<< filter filterEntry
+findEntry f l = head <<< filter filterEntry
   where
     filterEntry :: Entry -> Boolean
-    filterEntry = (\entry -> entry.firstName == firstName && entry.lastName ==
-      lastName) <<< unwrap
+    filterEntry (Entry { firstName, lastName }) = 
+      firstName == f && lastName == l
 
 
 printEntry :: String -> String -> AddressBook -> Maybe String
@@ -56,32 +53,21 @@ printEntry firstName lastName book =
   map showEntry (findEntry firstName lastName book)
 
 -- exercises
-{-- findAddress :: String -> String -> String -> AddressBook -> Maybe Entry --}
-{-- findAddress street city state = head <<< filter filterAddresses --}
-{--   where --} 
-{--         filterAddresses :: Entry -> Boolean --}
-{--         filterAddresses { address: a } = --} 
-{--           a.street == street && --}
-{--           a.city == city && --}
-{--           a.state == state --}
-
 findAddress :: String -> String -> String -> AddressBook -> Maybe Entry
 findAddress street city state = head <<< filter filterAddresses
   where 
         filterAddresses :: Entry -> Boolean
-        filterAddresses = unwrap >>> (\{ address: wa } -> 
-                          (unwrap >>> (\a -> 
+        filterAddresses (Entry { address: (Address a) }) = 
                               a.street == street &&
                               a.city == city &&
-                              a.state == state)) wa)
+                              a.state == state
 
 
 -- this function could be more efficient - how do we early return if we find
 isNamePresent :: String -> AddressBook -> Boolean
 isNamePresent name addr = foldr test false addr
   where 
-        test e acc = (unwrap >>> \{ firstName : n } -> n == name || acc) e
-    {-- test { firstName: n } a = n == name || a --}
+        test (Entry { firstName: n }) acc = n == name || acc
 
 
 
@@ -92,7 +78,7 @@ derive instance newtypeEntry :: Newtype Entry _
 derive instance eqEntry :: Eq Entry 
 
 -- deriving these instances allows me to simply use nub because I have EQ.
--- but adds extra complexity to all the other code. Can this be simplified?
+-- but adds extra complexity to all the other code where I have to unwrap the type
 
 removeDuplicates :: AddressBook -> AddressBook
 removeDuplicates addrb = nub addrb
