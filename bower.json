@@ -11,7 +11,8 @@
     "purescript-console": "^3.0.0",
     "purescript-math": "^2.1.0",
     "purescript-globals": "^3.0.0",
-    "purescript-lists": "^4.12.0"
+    "purescript-lists": "^4.12.0",
+    "purescript-numerics": "^0.1.1"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
