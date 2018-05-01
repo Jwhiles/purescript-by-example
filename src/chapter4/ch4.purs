@@ -7,6 +7,7 @@ import Data.Array.Partial (tail, head)
 import Data.Int (even)
 import Data.Foldable (product)
 import Partial.Unsafe (unsafePartial)
+import Control.MonadZero (guard)
 
 -- recursion ex
 
@@ -50,5 +51,16 @@ factors n = (\xs -> product xs == n) <$?> do
 isPrime :: Int -> Boolean
 isPrime n = (length $ factors n) == 1
 
+cartesianProd :: Array Int -> Array Int -> Array (Array Int)
+cartesianProd xs ys = do
+  x <- xs
+  y <- ys
+  pure [x, y]
 
-
+pythagTriple :: Int -> Array (Array Int)
+pythagTriple n = do
+  x <- 1 .. n
+  y <- 1 .. n
+  z <- 1 .. n
+  guard $ (x * x) + (y * y) == (z * z)
+  pure [x, y, z]
